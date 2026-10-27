@@ -1,4 +1,4 @@
 @echo off
 cd /d "%~dp0"
-python main.py --scenario braking
+python main.py --demo
 pause

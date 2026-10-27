@@ -2,13 +2,19 @@
 
 ## Introduction
 
+**Implementation update:** Two new closed-loop road demonstrations, `following` and `obstacle`, now supplement the original five experiments below. They use world-coordinate animation, a single in-lane target, four stationary roadside objects with noisy range observations, and simple estimated-state braking. Lane membership and object identities are given by the simulator. The road KF additionally uses known ego acceleration as input `G*(-a_ego)`; it does not observe target truth. The following lead brakes from 18 to 6 m/s; in the other scenario the target is stationary at 100 m.
+
+Across seeds 42–61, mean distance RMSE is 2.007 m raw versus 1.206 m KF for following, and 2.007 m raw versus 0.697 m KF for the obstacle. Corresponding KF speed RMSE values are 1.733 and 2.041 m/s, compared with approximately 28.7 m/s from raw range differences. All 40 default road trials maintained positive true gaps, and all obstacle trials stopped ego. These finite simulated results do not establish safety outside the tested settings. Comparisons use one driven trajectory per trial, not separate controllers with and without KF.
+
+Reproduce using `python main.py --demo --headless --trials 20 --output outputs/road_trials`. Road motion, executed speeds, braking commands, and roadside ranges are saved to `road_sensor.csv`. Seven automated tests now include control-input prediction and the two road scenarios across 20 seeds. The remaining sections describe the original five open-loop estimation experiments; their historical results remain unchanged.
+
 The aim is to estimate the longitudinal gap and relative speed between an ego vehicle and a lead vehicle using noisy range observations. Filtering can reduce measurement noise and provide relative-speed estimates without directly measuring speed. This simulation evaluates a linear Kalman filter under cruising, approach, braking, increased sensor noise, and temporary measurement loss.
 
 ## Methodology
 
 The state is `[distance, lead_speed - ego_speed]ᵀ`. A negative relative speed indicates closing. The transition matrix is `[[1, dt], [0, 1]]`, and the observation matrix is `[[1, 0]]`. Unobserved relative acceleration is represented by process covariance `Q = sigma_a² G Gᵀ`, where `G = [dt²/2, dt]ᵀ`. Measurement variance is `R = sigma_z²`. See README.md for the full prediction, correction, initialization, and Joseph covariance equations.
 
-The filter sees only range measurements, never ground-truth states. Missing observations cause prediction-only steps. Time-to-collision is calculated from the estimated states after correction. Illustrative caution and warning thresholds are five and three seconds. No automatic braking controller is implemented.
+In the original five experiments, the filter sees only range measurements, never ground-truth states. Missing observations cause prediction-only steps. Time-to-collision is calculated from the estimated states after correction. Illustrative caution and warning thresholds are five and three seconds. These original experiments have no automatic braking controller; the new road demonstrations add the controller described above.
 
 ## Implementation
 

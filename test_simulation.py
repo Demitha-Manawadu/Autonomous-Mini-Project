@@ -37,6 +37,24 @@ class SimulationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 run(config)
 
+    def test_known_acceleration_input(self):
+        kf = KalmanFilter(.1, 2, 2)
+        x, _, _ = kf.step(30.)
+        estimate, _, _ = kf.step(np.nan, relative_acceleration=4.)
+        np.testing.assert_allclose(estimate, kf.F @ x + kf.G * 4.)
+
+    def test_road_demos_brake_without_collision_across_noise_seeds(self):
+        for scenario in ('following', 'obstacle'):
+            for seed in range(42, 62):
+                r = run(Config(scenario=scenario, seed=seed))
+                self.assertGreater(r['truth'][:, 0].min(), 0)
+                self.assertTrue((r['acceleration'] < 0).any())
+                self.assertTrue(np.isfinite(r['roadside_readings']).any())
+                self.assertTrue((r['ego_speed'] >= 0).all())
+                if scenario == 'obstacle':
+                    np.testing.assert_equal(r['lead'], np.full(len(r['t']), 100.))
+                    self.assertEqual(r['ego_speed'][-1], 0.)
+
 
 if __name__ == '__main__':
     unittest.main()

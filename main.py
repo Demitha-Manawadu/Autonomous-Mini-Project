@@ -17,6 +17,9 @@ def save_results(r, directory):
                             np.sqrt(r['covariance'][:, 1, 1]), r['ttc'], r['true_ttc']])
     np.savetxt(directory / 'results.csv', data, delimiter=',', comments='',
                header='time_s,true_distance_m,true_relative_speed_mps,measured_distance_m,estimated_distance_m,estimated_relative_speed_mps,difference_speed_mps,distance_std_m,speed_std_mps,estimated_ttc_s,true_ttc_s')
+    if 'roadside_readings' in r:
+        road_data = np.column_stack([r['t'], r['ego'], r['lead'], r['ego_speed'], r['lead_speed'], r['acceleration'], r['roadside_readings']])
+        np.savetxt(directory / 'road_sensor.csv', road_data, delimiter=',', comments='', header='time_s,ego_front_m,target_rear_m,ego_speed_mps,target_speed_mps,ego_acceleration_mps2,roadside_1_range_m,roadside_2_range_m,roadside_3_range_m,roadside_4_range_m')
 
 
 def plot_results(r, directory):
@@ -55,10 +58,19 @@ def plot_results(r, directory):
             ax.axvspan(8, 10, color='gray', alpha=.15)
     fig.suptitle(f"Vehicle safety estimation — {r['config'].scenario}")
     fig.savefig(directory / 'performance.png', dpi=150)
+    if 'roadside_readings' in r:
+        from road import plot_road_comparison
+        comparison = plot_road_comparison(r, directory)
+        # Keep one plot window per scenario; road comparison is the main demo view.
+        plt.close(fig)
+        return comparison
     return fig
 
 
 def animate(r, directory, gif=False):
+    if 'roadside_readings' in r:
+        from road import animate_road
+        return animate_road(r, directory, gif)
     import matplotlib.pyplot as plt
     from matplotlib.animation import FuncAnimation, PillowWriter
     from matplotlib.patches import Rectangle
@@ -101,8 +113,9 @@ def animate(r, directory, gif=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--scenario', choices=SCENARIOS, default='braking')
-    parser.add_argument('--all', action='store_true', help='Run all five scenarios')
+    parser.add_argument('--scenario', choices=SCENARIOS, default='following')
+    parser.add_argument('--all', action='store_true', help='Run all scenarios, including original experiments')
+    parser.add_argument('--demo', action='store_true', help='Run both moving-road demonstrations')
     parser.add_argument('--headless', action='store_true', help='Save results without opening windows')
     parser.add_argument('--gif', action='store_true', help='Also save an animated GIF')
     parser.add_argument('--trials', type=int, default=1, help='Independent noise seeds per scenario')
@@ -120,7 +133,8 @@ def main():
         matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     rows, animations = [], []
-    for scenario in SCENARIOS if args.all else [args.scenario]:
+    scenarios = SCENARIOS if args.all else ('following', 'obstacle') if args.demo else [args.scenario]
+    for scenario in scenarios:
         for trial in range(args.trials):
             config = Config(scenario, args.duration, args.dt, args.sensor_std, args.accel_std, args.seed + trial)
             try:

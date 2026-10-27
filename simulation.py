@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import numpy as np
 
-SCENARIOS = ('cruise', 'approach', 'braking', 'noisy', 'dropout')
+SCENARIOS = ('following', 'obstacle', 'cruise', 'approach', 'braking', 'noisy', 'dropout')
 
 
 @dataclass
@@ -30,18 +30,19 @@ class KalmanFilter:
         self.H = np.array([[1., 0.]])
         # Independent, constant relative acceleration within each sample interval.
         g = np.array([0.5 * dt**2, dt])
+        self.G = g
         self.Q = accel_std**2 * np.outer(g, g)
         self.R = sensor_std**2
         self.x = None
         self.P = np.diag([self.R, 100.])
 
-    def step(self, measurement):
+    def step(self, measurement, relative_acceleration=0.):
         if self.x is None:
             if not np.isfinite(measurement):
                 raise ValueError('First measurement must be available')
             self.x = np.array([measurement, 0.])
             return self.x.copy(), self.P.copy(), np.nan
-        self.x = self.F @ self.x
+        self.x = self.F @ self.x + self.G * relative_acceleration
         self.P = self.F @ self.P @ self.F.T + self.Q
         innovation = np.nan
         if np.isfinite(measurement):
@@ -64,6 +65,9 @@ def time_to_collision(distance, relative_speed):
 
 def run(config):
     config.validate()
+    if config.scenario in ('following', 'obstacle'):
+        from road import run_road
+        return run_road(config)
     c = config
     t = np.arange(int(np.floor(c.duration / c.dt)) + 1) * c.dt
     n = len(t)
