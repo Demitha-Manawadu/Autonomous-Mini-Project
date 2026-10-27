@@ -2,3 +2,7 @@ __pycache__/
 .venv/
 outputs/
 demo_outputs/
+report/tools/
+report/*.log
+report/*.aux
+report/*.out

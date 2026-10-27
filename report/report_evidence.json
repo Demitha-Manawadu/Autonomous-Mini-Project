@@ -1,0 +1,130 @@
+{
+  "road_20_seed_summary": {
+    "following": {
+      "distance_sensor_rmse_m": {
+        "mean": 2.00652885220704,
+        "std": 0.10276244701631623
+      },
+      "distance_kf_rmse_m": {
+        "mean": 1.2057195165766843,
+        "std": 0.09355628136139792
+      },
+      "relative_speed_difference_rmse_mps": {
+        "mean": 28.735306171333114,
+        "std": 2.146830370934082
+      },
+      "relative_speed_kf_rmse_mps": {
+        "mean": 1.7330980714071238,
+        "std": 0.08405708436784526
+      },
+      "distance_kf_rmse_on_available_samples_m": {
+        "mean": 1.2057195165766843,
+        "std": 0.09355628136139792
+      },
+      "relative_speed_kf_rmse_on_difference_samples_mps": {
+        "mean": 1.7365608082689055,
+        "std": 0.08422503075780233
+      },
+      "distance_95pct_coverage": {
+        "mean": 0.8185258964143426,
+        "std": 0.025213175031548612
+      },
+      "missing_measurements": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "min_true_gap_m": 3.7199999999996294,
+      "all_stopped": false
+    },
+    "obstacle": {
+      "distance_sensor_rmse_m": {
+        "mean": 2.00652885220704,
+        "std": 0.10276244701631623
+      },
+      "distance_kf_rmse_m": {
+        "mean": 0.6967652845218179,
+        "std": 0.07926445867118963
+      },
+      "relative_speed_difference_rmse_mps": {
+        "mean": 28.729339167536665,
+        "std": 2.147102671106433
+      },
+      "relative_speed_kf_rmse_mps": {
+        "mean": 2.041412871232757,
+        "std": 0.2551073595966892
+      },
+      "distance_kf_rmse_on_available_samples_m": {
+        "mean": 0.6967652845218179,
+        "std": 0.07926445867118963
+      },
+      "relative_speed_kf_rmse_on_difference_samples_mps": {
+        "mean": 1.6915386171851459,
+        "std": 0.3057452727706917
+      },
+      "distance_95pct_coverage": {
+        "mean": 0.9737051792828687,
+        "std": 0.017789119937043643
+      },
+      "missing_measurements": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "min_true_gap_m": 10.100000000000037,
+      "all_stopped": true
+    }
+  },
+  "braking_tuning": [
+    [
+      0.5,
+      2.254350008421488,
+      2.147790974855531
+    ],
+    [
+      2.0,
+      1.0597213613903098,
+      1.6158475652151427
+    ],
+    [
+      4.0,
+      0.8823106075148914,
+      1.4047313820778293
+    ],
+    [
+      8.0,
+      0.9089061687497271,
+      1.4531800714942444
+    ]
+  ],
+  "seed42": {
+    "following": {
+      "distance_sensor_rmse_m": 1.8772579509056049,
+      "distance_kf_rmse_m": 1.0571033730169463,
+      "relative_speed_difference_rmse_mps": 24.970041921564484,
+      "relative_speed_kf_rmse_mps": 1.6346067469207342,
+      "distance_kf_rmse_on_available_samples_m": 1.0571033730169463,
+      "relative_speed_kf_rmse_on_difference_samples_mps": 1.6378726977232083,
+      "distance_95pct_coverage": 0.8406374501992032,
+      "missing_measurements": 0
+    },
+    "obstacle": {
+      "distance_sensor_rmse_m": 1.8772579509056049,
+      "distance_kf_rmse_m": 0.5807216356223575,
+      "relative_speed_difference_rmse_mps": 24.96182669578072,
+      "relative_speed_kf_rmse_mps": 1.8560955128379866,
+      "distance_kf_rmse_on_available_samples_m": 0.5807216356223575,
+      "relative_speed_kf_rmse_on_difference_samples_mps": 1.4706702264574536,
+      "distance_95pct_coverage": 0.9960159362549801,
+      "missing_measurements": 0
+    },
+    "dropout": {
+      "distance_sensor_rmse_m": 1.9005201478187044,
+      "distance_kf_rmse_m": 2.095006584067029,
+      "relative_speed_difference_rmse_mps": 25.60911110179321,
+      "relative_speed_kf_rmse_mps": 1.866155411162242,
+      "distance_kf_rmse_on_available_samples_m": 0.9911676688679781,
+      "relative_speed_kf_rmse_on_difference_samples_mps": 1.5091127213126272,
+      "distance_95pct_coverage": 0.7928286852589641,
+      "missing_measurements": 20
+    }
+  }
+}
